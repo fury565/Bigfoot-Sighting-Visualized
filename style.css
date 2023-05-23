@@ -1,19 +1,28 @@
 body{
-  background: lightcyanS;
+  background: lightcyan;
 }
 .container {
     position: relative;
-    display: inline-block;
+    display: block;
+    width: 1200px;
+    margin:auto;
   }
-  .circle-container{
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+.circle-container{
+  position: absolute;
+  top: 0;
+  left: 0;
+}
   
-  .svg-circle:hover > circle{
-    fill: blue;
-  }
+.svg-circle:hover > circle{
+  fill: blue;
+}
+
+#mapOptions{
+  text-align: center;
+}
+#mapOptions select{
+  margin-right: 20px;
+}
 #myPlot{
   width: 800px;
   height: 500px;

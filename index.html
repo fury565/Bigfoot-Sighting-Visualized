@@ -10,20 +10,23 @@
     <img src="images/us.jpg" alt="Your Image">
     <div class="circle-container" width="1173" height="635">
     </div>
+  </div><br>
+  <div id="mapOptions">
+    <label for="years">Show report by years:</label>
+    <select name="years" id="years">
+      <option value="-">-</option>
+    </select>
+    <span>Current year reports: <span class="year-counter">2833</span></span>
   </div>
-  <label for="years">Show report by years:</label>
-  <select name="years" id="years">
-    <option value="-">-</option>
-  </select>
-  <p>Current year reports: <span class="year-counter"></span></p>
   <div class="details-tab"> </div>
   <svg id="myPlot"></svg>
-  <p></p>
+  <br>
   <label for="chartSelector">Choose chart data:</label>
   <select name="chartSelector" id="chartSelector">
     <option value="1">Season</option>
     <option value="2">Classification</option>
     <option value="3">Weather</option>
+    <option value="4">Number/Year</option>
   </select>
   <script src="./script.js"></script>
   

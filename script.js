@@ -114,6 +114,21 @@ function setChartData(chartType){
       chartData=Object.entries(weatherCounts);
       toWeatherChart();
     }
+    else if(chartType==="4"){
+      let yearData=data.map((element) => element.date);
+      let yearCounts={};
+      yearData.forEach((date) => {
+        let modDate=date.substring(0,4);
+        if (yearCounts[modDate]) {
+          yearCounts[modDate]++;
+        } 
+        else {
+          yearCounts[modDate] = 1;
+        }
+      });
+      chartData=Object.entries(yearCounts);
+      toYearChart();
+    }
 }
 
 
@@ -230,6 +245,58 @@ function toWeatherChart(){
     .attr("y", -10)
     .attr("text-anchor", "middle")
     .style("font-size", "16px").text("Weather during report");
+}
+
+
+function toYearChart(){
+  d3.selectAll(".chartHolder > *").remove();
+  svg.append("svg")
+    .append("g")
+    .attr("transform","translate(" + chartMargin + "," + chartMargin + ")")
+  ;
+    
+  var x = d3.scaleBand().range([0, chartXMax]).padding(0.1)
+      .domain(chartData.map((d)=>d[0]));
+    
+  svg.append("g")
+    .attr("transform", "translate(0," + chartYMax + ")")
+    .call(d3.axisBottom(x));
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(chartData, (d) => d[1])])
+    .range([ chartYMax, 0]);
+    
+  svg.append("g")
+    .call(d3.axisLeft(y));
+    
+  svg.append('g')
+    .selectAll("dot")
+    .data(chartData)
+    .enter()
+    .append("circle")
+    .attr("cx", function (d) { return x(d[0]); } )
+    .attr("cy", function (d) { return y(d[1]); } )
+    .attr("r", 2)
+    .style("fill", "#CC0000");
+  
+  var line = d3.line()
+    .x(function(d) { return x(d[0]); }) 
+    .y(function(d) { return y(d[1]); }) 
+    .curve(d3.curveMonotoneX)
+    
+    svg.append("path")
+    .datum(chartData) 
+    .attr("class", "line") 
+    .attr("d", line)
+    .style("fill", "none")
+    .style("stroke", "#CC0000")
+    .style("stroke-width", "2");
+        
+  svg.append("text")
+    .attr("x", chartXMax/2)
+    .attr("y", -10)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px").text("Number of reports per year");
 }
 
 
