@@ -2,7 +2,8 @@
 <html>
 <head>
     <link rel="stylesheet" href="style.css">
-    <script type="module" src="./script.js"></script>
+    <script src="//d3js.org/d3.v4.js"></script>
+    
 </head>
 <body>
   <div class="container">
@@ -16,5 +17,15 @@
   </select>
   <p>Current year reports: <span class="year-counter"></span></p>
   <div class="details-tab"> </div>
+  <svg id="myPlot"></svg>
+  <p></p>
+  <label for="chartSelector">Choose chart data:</label>
+  <select name="chartSelector" id="chartSelector">
+    <option value="1">Season</option>
+    <option value="2">Classification</option>
+    <option value="3">Weather</option>
+  </select>
+  <script src="./script.js"></script>
+  
 </body>
 </html>

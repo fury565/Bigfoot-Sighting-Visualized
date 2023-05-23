@@ -14,3 +14,7 @@ body{
   .svg-circle:hover > circle{
     fill: blue;
   }
+#myPlot{
+  width: 800px;
+  height: 500px;
+}
