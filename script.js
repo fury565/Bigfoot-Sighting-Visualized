@@ -1,5 +1,9 @@
+const mapDisplay=document.querySelector('#mapPart');
+const chartDisplay=document.querySelector('#chartPart');
 const circleContainer=document.querySelector('.circle-container');
-const detailsContainer=document.querySelector('.details-tab');
+const detailsOverlay=document.querySelector('#detailsOverlay');
+const detailsContainer=document.querySelector('.detailsTab');
+const detailsCloser=document.querySelector('#detailsClose');
 const yearSelector=document.querySelector('#years');
 const yearCounter=document.querySelector('.year-counter');
 const chartSelector=document.querySelector('#chartSelector');
@@ -43,11 +47,19 @@ function addToMap(reportJson){
     newCircle.addEventListener('click',()=>setDetails(reportJson));
 }
 function setDetails(reportJson){
+    detailsOverlay.style.display="block";
     detailsContainer.innerHTML=`
         <p>Report Details:</p>
         <p>Title: ${reportJson.title}</p> 
-        <p>Date: ${reportJson.date}</p> 
+        <p>Location: ${reportJson.location_details}</p>
+        <p>Date: ${reportJson.date}</p>
+        <p>Classfication: ${reportJson.classification}</p>
+        <p>Weather: ${reportJson.summary}</p> 
+        <p>Statement: ${reportJson.observed}</p>
     `;
+}
+function hideDetails(){
+    detailsOverlay.style.display="none";
 }
 function reloadMap(year){
     circleContainer.innerHTML='';
@@ -69,65 +81,72 @@ function populateOptions(min,max){
         yearSelector.appendChild(option);
     }
 }
-
+function showChartValue(element){
+  let container=document.getElementsByClassName("dotValueContainer")[0];
+  container.style.display="block";
+  container.firstChild.innerHTML=`
+    <tspan x="0" dy="1.2em">Year:${element[0]}</tspan>
+    <tspan x="0" dy="1.2em">Count:${element[1]}</tspan>
+  `;
+}
 
 function setChartData(chartType){
     if(chartType==="1"){
-      let seasonData=data.map((element) => element.season);
-      let seasonCounts={};
-      seasonData.forEach((season) => {
-        if (seasonCounts[season]) {
-          seasonCounts[season]++;
-        } 
-        else {
-          seasonCounts[season] = 1;
-        }
-      });
-      chartData=Object.entries(seasonCounts);
-      toSeasonChart();
+        let seasonData=data.map((element) => element.season);
+        let seasonCounts={};
+        seasonData.forEach((season) => {
+          if (seasonCounts[season]) {
+            seasonCounts[season]++;
+          } 
+          else {
+            seasonCounts[season] = 1;
+          }
+        });
+        chartData=Object.entries(seasonCounts);
+        toSeasonChart();
     }
     else if(chartType==="2"){
-      let classificationData=data.map((element) => element.classification);
-      let classificationCounts={};
-      classificationData.forEach((classification) => {
-        if (classificationCounts[classification]) {
-          classificationCounts[classification]++;
-        } 
-        else {
-          classificationCounts[classification] = 1;
-        }
-      });
-      chartData=Object.entries(classificationCounts);
-      toClassificationChart();
+        let classificationData=data.map((element) => element.classification);
+        let classificationCounts={};
+        classificationData.forEach((classification) => {
+          if (classificationCounts[classification]) {
+            classificationCounts[classification]++;
+          } 
+          else {
+            classificationCounts[classification] = 1;
+          }
+        });
+        chartData=Object.entries(classificationCounts);
+        toClassificationChart();
     }
     else if(chartType==="3"){
-      let weatherData=data.map((element) => element.summary);
-      let weatherCounts={};
-      weatherData.forEach((weather) => {
-        if (weatherCounts[weather]) {
-          weatherCounts[weather]++;
-        } 
-        else {
-          weatherCounts[weather] = 1;
-        }
-      });
-      chartData=Object.entries(weatherCounts);
-      toWeatherChart();
+        let weatherData=data.map((element) => element.summary);
+        let weatherCounts={};
+        weatherData.forEach((weather) => {
+          if (weatherCounts[weather]) {
+            weatherCounts[weather]++;
+          } 
+          else {
+            weatherCounts[weather] = 1;
+          }
+        });
+        chartData=Object.entries(weatherCounts);
+        toWeatherChart();
     }
     else if(chartType==="4"){
-      let yearData=data.map((element) => element.date);
-      let yearCounts={};
-      yearData.forEach((date) => {
-        let modDate=date.substring(0,4);
-        if (yearCounts[modDate]) {
-          yearCounts[modDate]++;
-        } 
-        else {
-          yearCounts[modDate] = 1;
-        }
-      });
-      chartData=Object.entries(yearCounts);
-      toYearChart();
+        let yearData=data.map((element) => element.date);
+        let yearCounts={};
+        yearData.forEach((date) => {
+          let modDate=date.substring(0,4);
+          if (yearCounts[modDate]) {
+            yearCounts[modDate]++;
+          } 
+          else {
+            yearCounts[modDate] = 1;
+          }
+        });
+        chartData=Object.entries(yearCounts);
+        toYearChart();
     }
 }
 
@@ -155,10 +174,21 @@ function toSeasonChart(){
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", (d) => x(d[0]))
+    .attr("x", (d) => x(d[0]) + x.bandwidth() / 4)
     .attr("y", (d) => y(d[1]))
-    .attr("width", 100)
-    .attr("height", (d) => chartYMax - y(d[1]));
+    .attr("width", x.bandwidth() / 2)
+    .attr("height", (d) => chartYMax - y(d[1]))
+    .style("fill", "#BB0000")
+    
+  svg
+    .selectAll(".barValue")//the only reason it was done like this is because you cant put text into rect
+    .data(chartData)
+    .enter()
+    .append("text")
+    .text((d) => d[1]) 
+    .attr("x", (d) => x(d[0]) + x.bandwidth()/2) 
+    .attr("y", (d) => {if(y(d[1])<400){return 300-(200-y(d[1]));}else{return 400;}}) // these numbers probably shouldnt be tweaked
+    .style("text-anchor", "middle");
         
   svg.append("text")
     .attr("x", chartXMax/2)
@@ -195,10 +225,21 @@ function toClassificationChart(){
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", (d) => x(d[0]))
+    .attr("x", (d) => x(d[0]) + x.bandwidth() / 4)
     .attr("y", (d) => y(d[1]))
-    .attr("width", 100)
-    .attr("height", (d) => chartYMax - y(d[1]));
+    .attr("width", x.bandwidth() / 2)
+    .attr("height", (d) => chartYMax - y(d[1]))
+    .style("fill", "#BB0000");
+
+    svg
+    .selectAll(".barValue")
+    .data(chartData)
+    .enter()
+    .append("text")
+    .text((d) => d[1]) 
+    .attr("x", (d) => x(d[0]) + x.bandwidth()/2) 
+    .attr("y", (d) => {if(y(d[1])<400){return 300-(200-y(d[1]));}else{return 400;}})
+    .style("text-anchor", "middle");
         
   svg.append("text")
     .attr("x", chartXMax/2)
@@ -235,11 +276,22 @@ function toWeatherChart(){
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", (d) => x(d[0]))
+    .attr("x", (d) => x(d[0])+ x.bandwidth() / 4)
     .attr("y", (d) => y(d[1]))
-    .attr("width", 100)
-    .attr("height", (d) => chartYMax - y(d[1]));
+    .attr("width", x.bandwidth() / 2)
+    .attr("height", (d) => chartYMax - y(d[1]))
+    .style("fill", "#BB0000");
         
+  svg
+    .selectAll(".barValue")
+    .data(chartData)
+    .enter()
+    .append("text")
+    .text((d) => d[1]) 
+    .attr("x", (d) => x(d[0]) + x.bandwidth()/2) 
+    .attr("y", (d) => {if(y(d[1])<300){return 300-(200-y(d[1]));}else{return 380;}})
+    .style("text-anchor", "middle");
+
   svg.append("text")
     .attr("x", chartXMax/2)
     .attr("y", -10)
@@ -257,31 +309,25 @@ function toYearChart(){
     
   var x = d3.scaleBand().range([0, chartXMax]).padding(0.1)
       .domain(chartData.map((d)=>d[0]));
+
+  var xAxis=d3.axisBottom(x)
+  .tickValues(x.domain().filter((d, i) => i % 5 === 0));
     
   svg.append("g")
     .attr("transform", "translate(0," + chartYMax + ")")
-    .call(d3.axisBottom(x));
+    .call(xAxis);
 
   const y = d3.scaleLinear()
     .domain([0, d3.max(chartData, (d) => d[1])])
     .range([ chartYMax, 0]);
+
     
   svg.append("g")
     .call(d3.axisLeft(y));
     
-  svg.append('g')
-    .selectAll("dot")
-    .data(chartData)
-    .enter()
-    .append("circle")
-    .attr("cx", function (d) { return x(d[0]); } )
-    .attr("cy", function (d) { return y(d[1]); } )
-    .attr("r", 2)
-    .style("fill", "#CC0000");
-  
   var line = d3.line()
-    .x(function(d) { return x(d[0]); }) 
-    .y(function(d) { return y(d[1]); }) 
+    .x((d) => x(d[0]) + x.bandwidth() / 2) 
+    .y((d)=>  y(d[1]) ) 
     .curve(d3.curveMonotoneX)
     
     svg.append("path")
@@ -291,12 +337,36 @@ function toYearChart(){
     .style("fill", "none")
     .style("stroke", "#CC0000")
     .style("stroke-width", "2");
+
+  svg.append('g')
+    .selectAll("dot")
+    .data(chartData)
+    .enter()
+    .append("circle")
+    .attr("cx",  (d) => x(d[0]) + x.bandwidth() / 2 )
+    .attr("cy", (d)=>  y(d[1]) )
+    .attr("r", 3)
+    .style("fill", "#CC0000")
+    .on("mouseenter", (d)=>{ 
+      d3.select(d3.event.target)
+      .style("fill", "blue");
+      showChartValue(d);})
+    .on("mouseleave", (d)=>{
+      d3.select(d3.event.target)
+      .style("fill", "#CC0000");
+      });
+
         
   svg.append("text")
     .attr("x", chartXMax/2)
     .attr("y", -10)
     .attr("text-anchor", "middle")
     .style("font-size", "16px").text("Number of reports per year");
+
+  svg.append("g")
+  .attr("class","dotValueContainer")
+  .attr("transform","translate(" + chartMargin + "," + chartMargin + ")")
+  .append("text").style("font-size", "16px");
 }
 
 
@@ -304,7 +374,20 @@ function afterFetchInit(){
   setChartData("1");
 }
 
+
+function toMap(){
+  mapDisplay.style.display="block";
+  chartDisplay.style.display="none";
+}
+function toChart(){
+  mapDisplay.style.display="none";
+  chartDisplay.style.display="block";
+}
+
 getData();
 populateOptions(1953,2021);
 yearSelector.addEventListener('change',()=>reloadMap(yearSelector.value));
 chartSelector.addEventListener('change',()=>setChartData(chartSelector.value));
+detailsCloser.addEventListener('click',()=>hideDetails());
+document.getElementById("mapButton").addEventListener('click',()=>toMap());
+document.getElementById("chartButton").addEventListener('click',()=>toChart());

@@ -6,28 +6,47 @@
     
 </head>
 <body>
-  <div class="container">
-    <img src="images/us.jpg" alt="Your Image">
-    <div class="circle-container" width="1173" height="635">
-    </div>
-  </div><br>
-  <div id="mapOptions">
-    <label for="years">Show report by years:</label>
-    <select name="years" id="years">
-      <option value="-">-</option>
-    </select>
-    <span>Current year reports: <span class="year-counter">2833</span></span>
+  <div id="topbar">
+    <button id="mapButton">Map</button>
+    <span>Bigfoot Sightings</span>
+    <button id="chartButton">Chart</button>
   </div>
-  <div class="details-tab"> </div>
-  <svg id="myPlot"></svg>
-  <br>
-  <label for="chartSelector">Choose chart data:</label>
-  <select name="chartSelector" id="chartSelector">
-    <option value="1">Season</option>
-    <option value="2">Classification</option>
-    <option value="3">Weather</option>
-    <option value="4">Number/Year</option>
-  </select>
+  
+  <div id="menu">
+    <div id="mapPart">
+      <div class="container">
+        <img src="images/us.jpg" alt="Your Image">
+        <div class="circle-container" width="1173" height="635">
+        </div>
+      </div><br>
+      <div id="mapOptions">
+        <label for="years">Show report by years:</label>
+        <select name="years" id="years">
+          <option value="-">-</option>
+        </select>
+        <span>Current year reports: <span class="year-counter">2833</span></span>
+      </div>
+      <div id="detailsOverlay">
+        <div id="detailsHolder">
+          <button id="detailsClose">&#10005;</button>
+          <div class="detailsTab"> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="chartPart">
+    <svg id="myPlot"></svg>
+    <br>
+    <div id="chartOptions">
+      <label for="chartSelector">Choose chart data:</label>
+      <select name="chartSelector" id="chartSelector">
+        <option value="1">Season</option>
+        <option value="2">Classification</option>
+        <option value="3">Weather</option>
+        <option value="4">Number/Year</option>
+      </select>
+    </div>
+  </div>
   <script src="./script.js"></script>
   
 </body>

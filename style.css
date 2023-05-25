@@ -1,5 +1,52 @@
 body{
-  background: lightcyan;
+  background: rgb(150, 250, 214);
+  margin: 0;
+}
+#topbar{
+  display:flex;
+  justify-content: space-between;
+  background: rgb(20, 20, 20);
+}
+#topbar span{
+  font-size: 25px;
+  color:white;
+  padding: 0.5em 0;
+  font-style: bold;
+}
+#mapButton{
+  border: 0;
+  margin-left: 0.5em;
+  color:white;
+  background: rgb(20, 20, 20);
+  cursor: pointer;
+  font-size: 20px;
+}
+#chartButton{
+  border: 0;
+  margin-right: 0.5em;
+  color:white;
+  background: rgb(20, 20, 20);
+  cursor: pointer;
+  font-size: 20px;
+}
+#mapButton:hover{
+  background: white;
+  color: black;
+}
+#chartButton:hover{
+  background: white;
+  color: black;
+}
+#mapPart{
+  padding-top: 1em;
+  width:100%;
+  height: 100%;
+}
+#chartPart{
+  padding-top: 1em;
+  width:100%;
+  height: 100%;
+  display: none;
 }
 .container {
     position: relative;
@@ -19,11 +66,64 @@ body{
 
 #mapOptions{
   text-align: center;
+  padding-bottom: 1em;
 }
 #mapOptions select{
+  margin-right: 20px;
+}
+#chartOptions{
+  text-align: center;
+}
+#chartOptions select{
   margin-right: 20px;
 }
 #myPlot{
   width: 800px;
   height: 500px;
+  background: white;
+  display: block;
+  margin: auto;
+}
+
+#detailsOverlay{
+  position: fixed;
+  left:0;
+  top:0;
+  display: none;
+  width: 100%;
+  height: 100%;
+  background: rgba(128, 128, 128, 0.5);
+}
+#detailsHolder{
+  width:60%;
+  margin:auto;
+  margin-top:10vh;
+  border-radius: 20px;
+  background: white;
+}
+.detailsTab{
+  margin:15px;
+  padding: 5px 0;
+}
+.displayValue circle:hover{
+  fill: blue;
+  background: black;
+}
+#detailsClose{
+  background: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 15px;
+  right:20px;
+  color: red;
+  font-size: 40px;
+  line-height: 60px;
+  cursor: pointer;
+}
+.dotValueContainer{
+  display: none;
 }
