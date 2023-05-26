@@ -96,14 +96,17 @@ body{
 }
 #detailsHolder{
   width:60%;
+  max-height: 80%;
   margin:auto;
   margin-top:10vh;
   border-radius: 20px;
   background: white;
+  overflow-y: scroll;
 }
 .detailsTab{
   margin:15px;
   padding: 5px 0;
+  
 }
 .displayValue circle:hover{
   fill: blue;

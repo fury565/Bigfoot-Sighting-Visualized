@@ -89,6 +89,10 @@ function showChartValue(element){
     <tspan x="0" dy="1.2em">Count:${element[1]}</tspan>
   `;
 }
+function hideChartValue(){
+  let container=document.getElementsByClassName("dotValueContainer")[0];
+  container.style.display="none";
+}
 
 function setChartData(chartType){
     if(chartType==="1"){
@@ -177,8 +181,10 @@ function toSeasonChart(){
     .attr("x", (d) => x(d[0]) + x.bandwidth() / 4)
     .attr("y", (d) => y(d[1]))
     .attr("width", x.bandwidth() / 2)
+    .transition()
+    .duration(2000)
     .attr("height", (d) => chartYMax - y(d[1]))
-    .style("fill", "#BB0000")
+    .style("fill", "#BB0000");
     
   svg
     .selectAll(".barValue")//the only reason it was done like this is because you cant put text into rect
@@ -227,6 +233,8 @@ function toClassificationChart(){
     .attr("class", "bar")
     .attr("x", (d) => x(d[0]) + x.bandwidth() / 4)
     .attr("y", (d) => y(d[1]))
+    .transition()
+    .duration(2000)
     .attr("width", x.bandwidth() / 2)
     .attr("height", (d) => chartYMax - y(d[1]))
     .style("fill", "#BB0000");
@@ -278,6 +286,8 @@ function toWeatherChart(){
     .attr("class", "bar")
     .attr("x", (d) => x(d[0])+ x.bandwidth() / 4)
     .attr("y", (d) => y(d[1]))
+    .transition()
+    .duration(2000)
     .attr("width", x.bandwidth() / 2)
     .attr("height", (d) => chartYMax - y(d[1]))
     .style("fill", "#BB0000");
@@ -332,7 +342,7 @@ function toYearChart(){
     
     svg.append("path")
     .datum(chartData) 
-    .attr("class", "line") 
+    .attr("class", "line")
     .attr("d", line)
     .style("fill", "none")
     .style("stroke", "#CC0000")
@@ -349,11 +359,18 @@ function toYearChart(){
     .style("fill", "#CC0000")
     .on("mouseenter", (d)=>{ 
       d3.select(d3.event.target)
-      .style("fill", "blue");
+      .transition()
+      .duration(300)
+      .style("fill", "blue")
+      .attr("r",5);
       showChartValue(d);})
     .on("mouseleave", (d)=>{
       d3.select(d3.event.target)
-      .style("fill", "#CC0000");
+      .transition()
+      .duration(500)
+      .style("fill", "#CC0000")
+      .attr("r",3)
+      hideChartValue();
       });
 
         
